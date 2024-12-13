@@ -1,8 +1,8 @@
 package org.example.housekeeping_manager;
 
 public abstract class ElderlyHome {
-    private final int id;       // Unique identifier
-    private String status;      // CLEANED or NOT_CLEANED
+    private final int id;
+    private String status;
 
     // Constructor
     public ElderlyHome(int id, String status) {
@@ -10,7 +10,7 @@ public abstract class ElderlyHome {
         this.status = status;
     }
 
-    // Getters and Setters
+
     public int getId() {
         return id;
     }
@@ -23,6 +23,5 @@ public abstract class ElderlyHome {
         this.status = status;
     }
 
-    // Abstract method to display details (to be implemented by subclasses)
     public abstract void displayDetails();
 }

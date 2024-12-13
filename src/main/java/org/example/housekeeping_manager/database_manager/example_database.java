@@ -1,4 +1,4 @@
-package database_manager;
+package org.example.housekeeping_manager.database_manager;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;

@@ -37,9 +37,12 @@ public class manager_gui extends VerticalLayout {
         H2 title = new H2("Housekeeper Manager");
         Span subtitle = new Span("powered by Nico Köchli - Programming project 2, FHNW");
         Image logo = new Image("fhnw_logo.jpg", "FHNW Logo");
-        logo.setHeight("50px");
+        Image maidImage = new Image("maid.png", "Maid Icon");
 
-        HorizontalLayout header = new HorizontalLayout(new VerticalLayout(title, subtitle), logo);
+        logo.setHeight("50px");
+        maidImage.setHeight("80px");
+
+        HorizontalLayout header = new HorizontalLayout(maidImage, new VerticalLayout(title, subtitle), logo);
         header.setAlignItems(Alignment.CENTER);
         header.setWidthFull();
         header.getStyle()
@@ -287,8 +290,8 @@ public class manager_gui extends VerticalLayout {
 
         // Add button click listeners
         sortButton.addClickListener(event -> {
-            List<Room> notCleanedRooms = NotCleanedRooms(rooms); // Filter "NOT_CLEANED" rooms
-            grid.setItems(notCleanedRooms); // Update grid to show only "NOT_CLEANED" rooms
+            List<Room> notCleanedRooms = NotCleanedRooms(rooms);
+            grid.setItems(notCleanedRooms);
         });
 
         backButton.addClickListener(event -> {
@@ -320,10 +323,10 @@ public class manager_gui extends VerticalLayout {
         List<Room> notCleanedRooms = new ArrayList<>();
         for (Room room : rooms) {
             if ("NOT_CLEANED".equals(room.getStatus())) {
-                notCleanedRooms.add(room); // Add rooms with "NOT_CLEANED" status
+                notCleanedRooms.add(room);
             }
         }
-        return notCleanedRooms; // Return the filtered list
+        return notCleanedRooms;
     }
 
     private void updateTaskHistory(VerticalLayout taskHistoryLayout) {

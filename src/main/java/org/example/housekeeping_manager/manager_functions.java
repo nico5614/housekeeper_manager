@@ -1,6 +1,7 @@
 package org.example.housekeeping_manager;
 import org.example.housekeeping_manager.rooms.Room;
 import org.example.housekeeping_manager.tasks.Task;
+
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ public class manager_functions {
         String roomQuery = "SELECT * FROM Rooms";
         String taskQuery = "SELECT * FROM Tasks WHERE RoomID = ?";
 
-        try (Connection connection = DriverManager.getConnection("jdbc:sqlite:src/main/database/chinook.db");
+        try (Connection connection = DriverManager.getConnection("jdbc:sqlite:src/main/database/chinoo.db");
              PreparedStatement roomStatement = connection.prepareStatement(roomQuery);
              PreparedStatement taskStatement = connection.prepareStatement(taskQuery)) {
 
@@ -61,28 +62,32 @@ if (roomID == 1) {
         return rooms;
     }
 
-
     public static void updateTaskStatus(int taskID, String newStatus) {
         String sql = "UPDATE Tasks SET Status = ? WHERE TaskID = ?";
         try (Connection connection = DriverManager.getConnection("jdbc:sqlite:src/main/database/chinook.db");
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
             // Execute the database update
             preparedStatement.setString(1, newStatus);
             preparedStatement.setInt(2, taskID);
             preparedStatement.executeUpdate();
 
-            // Fetch the task details for logging
-            List<Room> rooms = getAllRooms(); // Assume getAllRooms fetches the latest rooms from the database
+            // Fetch the room and task details
+            List<Room> rooms = getAllRooms();
             for (Room room : rooms) {
                 for (Task task : room.getTasks()) {
                     if (task.getId() == taskID) {
-                        task.setStatus(newStatus); // Update the task's status in memory
+                        // Add the change to TaskHistory
+                        String historyEntry = String.format(
+                                "In Room '%s' the Task '%s' changed status to '%s'",
+                                room.getRoomName(),task.getTaskName(), newStatus
+                        );
+                        taskHistory.addFirst(historyEntry);
 
-                        // Add to task history with only the end status
-                        addTaskHistory("Task '" + task.getTaskName() + "' in Room '" + room.getRoomName() +
-                                "' changed to " + newStatus);
 
-                        break;
+                        if (taskHistory.size() > 6) {
+                            taskHistory.removeLast();
+                        }
                     }
                 }
             }
@@ -90,6 +95,7 @@ if (roomID == 1) {
             e.printStackTrace();
         }
     }
+
 
 
 
@@ -130,13 +136,7 @@ if (roomID == 1) {
         }
     }
 
-    public static void addTaskHistory(String taskChange) {
-        taskHistory.addFirst(taskChange); // Add the latest change at the beginning
-        if (taskHistory.size() > 6) { // Keep only the last 6 changes
-            taskHistory.removeLast(); // Remove the oldest entry
-        }
 
-    }
         public static LinkedList<String> getTaskHistory() {
             return taskHistory;
         }

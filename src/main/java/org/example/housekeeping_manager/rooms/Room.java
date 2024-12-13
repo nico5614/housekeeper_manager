@@ -6,11 +6,11 @@ import java.util.List;
 
 public class Room extends ElderlyHome {
     private final String roomName;
-    private final List<Task> tasks; // List of tasks for the room
+    private final List<Task> tasks;
 
     // Constructor
     public Room(int roomID, String roomName, String status, List<Task> tasks) {
-        super(roomID, status);  // Call parent constructor
+        super(roomID, status);
         this.roomName = roomName;
         this.tasks = tasks;
     }
