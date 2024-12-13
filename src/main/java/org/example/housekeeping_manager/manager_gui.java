@@ -23,61 +23,63 @@ import java.util.List;
 @Route("")
 public class manager_gui extends VerticalLayout {
 
-    private Span totalRoomsText;
-    private Span roomsCleanedText;
-    private Span roomsNotCleanedText;
-    private HorizontalLayout roomLayout;
+    private Span totalRoomsText; // Display for total rooms count
+    private Span roomsCleanedText; // Display for cleaned rooms count
+    private Span roomsNotCleanedText; // Display for not cleaned rooms count
+    private HorizontalLayout roomLayout; // Layout for displaying individual room details
 
     public manager_gui() {
-        setWidthFull();
-        setSpacing(true);
-        setPadding(true);
+        setWidthFull(); // Set the width of the layout to occupy full screen
+        setSpacing(true); // Add spacing between components
+        setPadding(true); // Add padding around the layout
 
-        // Header Section
-        H2 title = new H2("Housekeeper Manager");
-        Span subtitle = new Span("powered by Nico Köchli - Programming project 2, FHNW");
-        Image logo = new Image("fhnw_logo.jpg", "FHNW Logo");
-        Image maidImage = new Image("maid.png", "Maid Icon");
+        // Header Section: Title, subtitle, and images
+        H2 title = new H2("Housekeeper Manager"); // Main title
+        Span subtitle = new Span("powered by Nico Köchli - Programming project 2, FHNW"); // Subtitle
+        Image logo = new Image("fhnw_logo.jpg", "FHNW Logo"); // FHNW Logo
+        Image maidImage = new Image("maid.png", "Maid Icon"); // Maid icon for decoration
 
         logo.setHeight("50px");
         maidImage.setHeight("80px");
 
+        // Combine header components into a horizontal layout
         HorizontalLayout header = new HorizontalLayout(maidImage, new VerticalLayout(title, subtitle), logo);
-        header.setAlignItems(Alignment.CENTER);
-        header.setWidthFull();
+        header.setAlignItems(Alignment.CENTER); // Align items in the center
+        header.setWidthFull(); // Set full width for header
         header.getStyle()
-                .set("background-color", "#ffffff")
-                .set("padding", "20px");
+                .set("background-color", "#ffffff") // Set background color
+                .set("padding", "20px"); // Add padding to header
 
         // Black Separator Line
-        Div separator = createSeparator();
+        Div separator = createSeparator(); // Creates a dividing line between sections
 
         // Tabs Navigation Bar
-        Tabs tabs = createTabs();
+        Tabs tabs = createTabs(); // Creates tabs for navigation
 
         // Content Area for Tabs
         Div tabContent = new Div();
-        tabContent.setWidthFull();
-        tabContent.getStyle().set("padding", "20px");
+        tabContent.setWidthFull(); // Set full width for content area
+        tabContent.getStyle().set("padding", "20px"); // Add padding
 
+        // Add event listener for tab changes
         tabs.addSelectedChangeListener(event -> {
-            tabContent.removeAll();
+            tabContent.removeAll(); // Clear the content area
             switch (tabs.getSelectedTab().getLabel()) {
                 case "Homepage":
-                    tabContent.add(createHomepageLayout());
+                    tabContent.add(createHomepageLayout()); // Add homepage layout
                     break;
                 case "Rooms":
-                    tabContent.add(createRoomLayout());
+                    tabContent.add(createRoomLayout()); // Add room layout
                     break;
                 case "Roomlist":
-                    tabContent.add(createRoomListLayout());
+                    tabContent.add(createRoomListLayout()); // Add room list layout
                     break;
                 default:
-                    tabContent.add(new H3("Unknown Page"));
+                    tabContent.add(new H3("Unknown Page")); // Handle invalid tabs
             }
         });
 
-        // Add components to layout
+        // Add header, separator, tabs, and content area to main layout
         add(header, separator, tabs, tabContent);
 
         // Default content for Homepage
@@ -85,6 +87,10 @@ public class manager_gui extends VerticalLayout {
     }
 
     private Div createSeparator() {
+        /**
+         * Creates a black horizontal line for visual separation.
+         * Styling includes height, width, margin, and background color.
+         */
         Div separator = new Div();
         separator.getStyle()
                 .set("height", "5px")
@@ -96,19 +102,27 @@ public class manager_gui extends VerticalLayout {
     }
 
     private Tabs createTabs() {
+        /**
+         * Creates navigation tabs for switching between different views (Homepage, Rooms, Roomlist).
+         * Uses Tab and Tabs components from Vaadin.
+         */
         Tab homeTab = new Tab("Homepage");
         Tab roomTab = new Tab("Rooms");
         Tab roomListTab = new Tab("Roomlist");
 
         Tabs tabs = new Tabs(homeTab, roomTab, roomListTab);
         tabs.getStyle()
-                .set("background-color", "#FFFFFF")
-                .set("margin-bottom", "10px");
+                .set("background-color", "#FFFFFF") // White background for tabs
+                .set("margin-bottom", "10px"); // Add spacing below tabs
 
         return tabs;
     }
 
     private VerticalLayout createHomepageLayout() {
+        /**
+         * Layout for the homepage tab.
+         * Includes statistics (total rooms, cleaned rooms, not cleaned rooms) and task history.
+         */
         VerticalLayout homepageLayout = new VerticalLayout();
 
         // Statistics Section
@@ -122,7 +136,7 @@ public class manager_gui extends VerticalLayout {
         updateRoomStats();
 
         // Task History Section
-        H3 historyTitle = new H3("Latest Task Changes");
+        H3 historyTitle = new H3("Latest Task Changes"); // Title for task history section
         historyTitle.getStyle().set("margin-top", "20px").set("margin-bottom", "10px");
 
         // Create a container to display the history
@@ -141,42 +155,53 @@ public class manager_gui extends VerticalLayout {
         return homepageLayout;
     }
 
-
     private HorizontalLayout createStatRow(String label, Span value) {
-        // Text for the stat
-        H3 statLabel = new H3(label);
-        statLabel.getStyle().set("margin-right", "10px");
+        /**
+         * Creates a row for displaying a single statistic.
+         * Example: "Total Rooms: 5"
+         */
+        H3 statLabel = new H3(label); // Label for the statistic
+        statLabel.getStyle().set("margin-right", "10px"); // Add spacing to the right
 
-        // Style for the value span
-        value.getStyle().set("font-weight", "bold");
+        value.getStyle().set("font-weight", "bold"); // Bold font for the statistic value
 
-        // Create the horizontal layout
         HorizontalLayout statRow = new HorizontalLayout(statLabel, value);
-        statRow.setAlignItems(Alignment.CENTER);
-        statRow.setWidthFull();
-        statRow.setSpacing(true);
+        statRow.setAlignItems(Alignment.CENTER); // Center align the label and value
+        statRow.setWidthFull(); // Set full width
+        statRow.setSpacing(true); // Add spacing between components
 
         return statRow;
     }
 
-
     private HorizontalLayout createRoomLayout() {
+        /**
+         * Layout for the "Rooms" tab.
+         * Displays room details using a horizontal layout.
+         */
         roomLayout = new HorizontalLayout();
-        roomLayout.setWidthFull();
-        roomLayout.setSpacing(true);
-        refreshRoomLayout();
+        roomLayout.setWidthFull(); // Full width layout
+        roomLayout.setSpacing(true); // Add spacing between components
+        refreshRoomLayout(); // Populate with room data
         return roomLayout;
     }
 
     private void refreshRoomLayout() {
-        roomLayout.removeAll();
-        List<Room> updatedRooms = manager_functions.getAllRooms();
+        /**
+         * Refreshes the room layout with the latest data from the database.
+         * Uses manager_functions.getAllRooms() to fetch updated room details.
+         */
+        roomLayout.removeAll(); // Clear existing components
+        List<Room> updatedRooms = manager_functions.getAllRooms(); // Fetch updated rooms from database
         for (Room room : updatedRooms) {
-            roomLayout.add(createRoomBox(room));
+            roomLayout.add(createRoomBox(room)); // Add each room as a box
         }
     }
 
     private Div createRoomBox(Room room) {
+        /**
+         * Creates a visual box to display room details.
+         * Includes room name, status, and associated tasks.
+         */
         Div box = new Div();
         box.getStyle()
                 .set("border", "1px solid #e0e0e0")
@@ -209,15 +234,18 @@ public class manager_gui extends VerticalLayout {
         tasksLayout.setPadding(false);
 
         for (Task task : room.getTasks()) {
+            /**
+             * Lambda Expression:
+             * room.getTasks() -> Iterates through each task in the room's task list.
+             * task -> Represents the current task in the loop.
+             */
             HorizontalLayout taskLayout = new HorizontalLayout();
             taskLayout.setWidthFull();
 
-            // Task Name - Left Aligned
             Span taskName = new Span(task.getTaskName());
             taskName.getStyle().set("flex", "1");
             taskLayout.add(taskName);
 
-            // Task Icon - Right Aligned
             Image taskStatusIcon = new Image(
                     task.getStatus().equals("CLEANED") ? "cleaned.png" : "not_cleaned.png",
                     task.getStatus()
@@ -225,14 +253,13 @@ public class manager_gui extends VerticalLayout {
             taskStatusIcon.setHeight("20px");
             taskStatusIcon.getStyle().set("margin-left", "auto");
             taskStatusIcon.addClickListener(event -> {
-                // Update the task status
+                /**
+                 * Updates the task status and refreshes the layout dynamically.
+                 * Event listener for the task status icon.
+                 */
                 String newStatus = task.getStatus().equals("CLEANED") ? "NOT_CLEANED" : "CLEANED";
                 manager_functions.updateTaskStatus(task.getId(), newStatus);
-
-                // Update the room status dynamically
                 manager_functions.updateRoomStatusBasedOnTasks(room.getId());
-
-                // Refresh the layout dynamically without full reload
                 refreshRoomLayout();
                 updateRoomStats();
             });
@@ -246,6 +273,10 @@ public class manager_gui extends VerticalLayout {
     }
 
     private void updateRoomStats() {
+        /**
+         * Updates the room statistics on the homepage.
+         * Fetches data using manager_functions.getAllRooms() and calculates statistics dynamically.
+         */
         List<Room> rooms = manager_functions.getAllRooms();
         long cleaned = rooms.stream().filter(room -> "CLEANED".equals(room.getStatus())).count();
         totalRoomsText.setText(String.valueOf(rooms.size()));
@@ -254,72 +285,56 @@ public class manager_gui extends VerticalLayout {
     }
 
     private VerticalLayout createRoomListLayout() {
+        /**
+         * Layout for the "Roomlist" tab.
+         * Displays all rooms in a grid with options to filter and reset.
+         */
         VerticalLayout roomListLayout = new VerticalLayout();
 
-        // Fetch data from the database
-        List<Room> rooms = manager_functions.getAllRooms();
+        List<Room> rooms = manager_functions.getAllRooms(); // Fetch rooms from database
 
-        // Create a grid
-        Grid<Room> grid = new Grid<>(Room.class, false);
+        Grid<Room> grid = new Grid<>(Room.class, false); // Create a grid to display rooms
         grid.addColumn(Room::getRoomName).setHeader("Room Name");
         grid.addColumn(Room::getStatus).setHeader("Status");
 
-        // Set initial data to grid
-        grid.setItems(rooms);
+        grid.setItems(rooms); // Set data for the grid
 
-        // Create buttons
         Button sortButton = new Button("SORT");
-        sortButton.getStyle()
-                .set("background-color", "#4caf50") // Green background
-                .set("color", "white") // White text
-                .set("font-weight", "bold") // Bold text
-                .set("border", "none") // No border
-                .set("padding", "10px 20px") // Padding for size
-                .set("border-radius", "5px") // Rounded corners
-                .set("cursor", "pointer"); // Pointer cursor
-
-        Button backButton = new Button("BACK");
-        backButton.getStyle()
-                .set("background-color", "#f44336") // Red background
-                .set("color", "white") // White text
-                .set("font-weight", "bold") // Bold text
-                .set("border", "none") // No border
-                .set("padding", "10px 20px") // Padding for size
-                .set("border-radius", "5px") // Rounded corners
-                .set("cursor", "pointer"); // Pointer cursor
-
-        // Add button click listeners
         sortButton.addClickListener(event -> {
+            /**
+             * Filters rooms to display only those with status "NOT_CLEANED".
+             * Updates the grid dynamically.
+             */
             List<Room> notCleanedRooms = NotCleanedRooms(rooms);
             grid.setItems(notCleanedRooms);
         });
 
+        Button backButton = new Button("BACK");
         backButton.addClickListener(event -> {
-            grid.setItems(rooms); // Reset grid to show all rooms
+            /**
+             * Resets the grid to display all rooms.
+             */
+            grid.setItems(rooms);
         });
 
-        // Create a vertical layout for buttons
         VerticalLayout buttonLayout = new VerticalLayout(sortButton, backButton);
-        buttonLayout.setSpacing(true); // Space between buttons
-        buttonLayout.setWidth("30%"); // Adjust button layout width
-        buttonLayout.setAlignItems(Alignment.CENTER); // Center align buttons
-        buttonLayout.getStyle().set("margin-left", "auto"); // Push buttons to the right
+        buttonLayout.setSpacing(true);
+        buttonLayout.setWidth("30%");
+        buttonLayout.setAlignItems(Alignment.CENTER);
 
-        // Create a horizontal layout for grid and buttons
         HorizontalLayout mainLayout = new HorizontalLayout(grid, buttonLayout);
-        mainLayout.setWidth("100%"); // Ensure full-width layout
-        mainLayout.setSpacing(false); // Remove horizontal spacing
+        mainLayout.setWidth("100%");
+        mainLayout.setSpacing(false);
 
-        // Add components to the layout
         roomListLayout.add(new H2("Room List"), mainLayout);
-        roomListLayout.setSpacing(false); // Reduce vertical spacing
-        roomListLayout.setPadding(false); // Remove padding
-
         return roomListLayout;
     }
 
-
     private List<Room> NotCleanedRooms(List<Room> rooms) {
+        /**
+         * Filters rooms that are "NOT_CLEANED" using a simple for-loop.
+         * Adds filtered rooms to a new list and returns it.
+         */
         List<Room> notCleanedRooms = new ArrayList<>();
         for (Room room : rooms) {
             if ("NOT_CLEANED".equals(room.getStatus())) {
@@ -330,18 +345,20 @@ public class manager_gui extends VerticalLayout {
     }
 
     private void updateTaskHistory(VerticalLayout taskHistoryLayout) {
+        /**
+         * Updates the task history display on the homepage.
+         * Fetches recent task history using manager_functions.getTaskHistory().
+         */
         taskHistoryLayout.removeAll(); // Clear existing history
+        LinkedList<String> history = manager_functions.getTaskHistory(); // Fetch task history
 
-        // Fetch the latest task history
-        LinkedList<String> history = manager_functions.getTaskHistory();
-
-        // Add each task change to the layout
         for (String taskChange : history) {
+            /**
+             * Iterates through each task history entry and adds it to the layout.
+             */
             Span historyEntry = new Span(taskChange);
             historyEntry.getStyle().set("font-size", "14px").set("color", "#333");
             taskHistoryLayout.add(historyEntry);
         }
     }
-
-
 }
