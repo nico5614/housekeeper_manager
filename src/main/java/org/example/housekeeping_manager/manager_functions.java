@@ -5,10 +5,14 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class manager_functions {
 
+    private static final Logger logger = LoggerFactory.getLogger(manager_functions.class);
     // Fetch all rooms along with their tasks from the database
+
     public static List<Room> getAllRooms() {
         List<Room> rooms = new ArrayList<>();
         String roomQuery = "SELECT * FROM Rooms";
@@ -18,6 +22,7 @@ public class manager_functions {
              PreparedStatement roomStatement = connection.prepareStatement(roomQuery);
              PreparedStatement taskStatement = connection.prepareStatement(taskQuery)) {
 
+            logger.debug("Executing query: {}", roomQuery);
             ResultSet roomResultSet = roomStatement.executeQuery();
 
             while (roomResultSet.next()) {
@@ -25,7 +30,12 @@ public class manager_functions {
                 String roomName = roomResultSet.getString("RoomName");
                 String status = roomResultSet.getString("Status");
 
-                // Fetch tasks for the room
+                // Log details only for Room ID 1
+
+                logger.info("Room / s found: Name={} Status={}", roomName, status);
+
+
+                // Fetch tasks for Room ID 1
                 List<Task> tasks = new ArrayList<>();
                 taskStatement.setInt(1, roomID);
                 ResultSet taskResultSet = taskStatement.executeQuery();
@@ -33,16 +43,23 @@ public class manager_functions {
                     int taskID = taskResultSet.getInt("TaskID");
                     String taskName = taskResultSet.getString("TaskName");
                     String taskStatus = taskResultSet.getString("Status");
+
+                    // Log task details only for Room ID 1 // if (roomID == 1) {}
+
+    logger.info("Task for Room / s: ID={} Name={} Status={}", taskID, taskName, taskStatus);
+
+
                     tasks.add(new Task(taskID, taskName, taskStatus));
                 }
 
                 rooms.add(new Room(roomID, roomName, status, tasks));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("SQL error in getAllRooms", e);
         }
         return rooms;
     }
+
 
     // Update the status of a specific task
     public static void updateTaskStatus(int taskID, String newStatus) {

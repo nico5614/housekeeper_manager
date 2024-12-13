@@ -202,10 +202,10 @@ public class manager_gui extends VerticalLayout {
             taskStatusIcon.addClickListener(event -> {
                 // Update the task status
                 String newStatus = task.getStatus().equals("CLEANED") ? "NOT_CLEANED" : "CLEANED";
-                manager_functions.updateTaskStatus(task.getTaskID(), newStatus);
+                manager_functions.updateTaskStatus(task.getId(), newStatus);
 
                 // Update the room status dynamically
-                manager_functions.updateRoomStatusBasedOnTasks(room.getRoomID());
+                manager_functions.updateRoomStatusBasedOnTasks(room.getId());
 
                 // Refresh the layout dynamically without full reload
                 refreshRoomLayout();
@@ -265,8 +265,8 @@ public class manager_gui extends VerticalLayout {
 
         // Add button click listeners
         sortButton.addClickListener(event -> {
-            List<Room> notCleanedRooms = sortNotCleaned(rooms);
-            grid.setItems(notCleanedRooms); // Update grid with filtered data
+            List<Room> notCleanedRooms = NotCleanedRooms(rooms); // Filter "NOT_CLEANED" rooms
+            grid.setItems(notCleanedRooms); // Update grid to show only "NOT_CLEANED" rooms
         });
 
         backButton.addClickListener(event -> {
@@ -293,22 +293,17 @@ public class manager_gui extends VerticalLayout {
         return roomListLayout;
     }
 
-    private List<Room> sortNotCleaned(List<Room> rooms) {
-        List<Room> sortedRooms = new ArrayList<>(rooms);
 
-        for (int i = 0; i < sortedRooms.size() - 1; i++) {
-            for (int j = i + 1; j < sortedRooms.size(); j++) {
-                if (sortedRooms.get(i).getStatus().equals("CLEANED") &&
-                        sortedRooms.get(j).getStatus().equals("NOT_CLEANED")) {
-                    // Swap rooms
-                    Room temp = sortedRooms.get(i);
-                    sortedRooms.set(i, sortedRooms.get(j));
-                    sortedRooms.set(j, temp);
-                }
+    private List<Room> NotCleanedRooms(List<Room> rooms) {
+        List<Room> notCleanedRooms = new ArrayList<>();
+        for (Room room : rooms) {
+            if ("NOT_CLEANED".equals(room.getStatus())) {
+                notCleanedRooms.add(room); // Add rooms with "NOT_CLEANED" status
             }
         }
-        return sortedRooms;
+        return notCleanedRooms; // Return the filtered list
     }
+
 
 
 }

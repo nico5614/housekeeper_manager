@@ -1,31 +1,36 @@
 package org.example.housekeeping_manager.rooms;
-import org.example.housekeeping_manager.tasks.Task;
 
+import org.example.housekeeping_manager.ElderlyHome;
+import org.example.housekeeping_manager.tasks.Task;
 import java.util.List;
 
-public class Room {
-    private final int roomID;
+public class Room extends ElderlyHome {
     private final String roomName;
-    private final String status;
-    private final List<Task> tasks; // Field to store tasks for the room
+    private final List<Task> tasks; // List of tasks for the room
 
     // Constructor
     public Room(int roomID, String roomName, String status, List<Task> tasks) {
-        this.roomID = roomID;
+        super(roomID, status);  // Call parent constructor
         this.roomName = roomName;
-        this.status = status;
         this.tasks = tasks;
     }
 
-    // Getters
-    public int getRoomID() {return roomID;}
     public String getRoomName() {
         return roomName;
     }
-    public String getStatus() {
-        return status;
-    }
+
     public List<Task> getTasks() {
         return tasks;
+    }
+
+    @Override
+    public void displayDetails() {
+        System.out.println("Room ID: " + getId());
+        System.out.println("Room Name: " + roomName);
+        System.out.println("Status: " + getStatus());
+        System.out.println("Tasks: ");
+        for (Task task : tasks) {
+            System.out.println("- " + task.getTaskName() + " (" + task.getStatus() + ")");
+        }
     }
 }

@@ -1,40 +1,24 @@
 package org.example.housekeeping_manager.tasks;
 
-public class Task {
-    private final int taskId;
-    private final String taskName;
-    private String status;
+import org.example.housekeeping_manager.ElderlyHome;
+
+public class Task extends ElderlyHome {
+    private final String taskName; // Name of the task
 
     // Constructor
-    public Task(int taskId, String taskName, String status) {
-        this.taskId = taskId;
+    public Task(int taskID, String taskName, String status) {
+        super(taskID, status);  // Call parent constructor
         this.taskName = taskName;
-        this.status = status;
-    }
-
-    // Getters and Setters
-    public int getTaskID() {
-        return taskId;
     }
 
     public String getTaskName() {
         return taskName;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
     @Override
-    public String toString() {
-        return "Task{" +
-                "taskId=" + taskId +
-                ", taskName='" + taskName + '\'' +
-                ", status='" + status + '\'' +
-                '}';
+    public void displayDetails() {
+        System.out.println("Task ID: " + getId());
+        System.out.println("Task Name: " + taskName);
+        System.out.println("Status: " + getStatus());
     }
 }
