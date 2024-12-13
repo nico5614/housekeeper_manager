@@ -12,6 +12,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.Route;
+import java.util.LinkedList;
 import java.util.ArrayList;
 
 import org.example.housekeeping_manager.rooms.Room;
@@ -107,15 +108,36 @@ public class manager_gui extends VerticalLayout {
     private VerticalLayout createHomepageLayout() {
         VerticalLayout homepageLayout = new VerticalLayout();
 
+        // Statistics Section
         HorizontalLayout totalRoomsLayout = createStatRow("Total Rooms: ", totalRoomsText = new Span("0"));
         HorizontalLayout roomsCleanedLayout = createStatRow("Rooms Cleaned: ", roomsCleanedText = new Span("0"));
         HorizontalLayout roomsNotCleanedLayout = createStatRow("Rooms Not Cleaned: ", roomsNotCleanedText = new Span("0"));
 
         homepageLayout.add(totalRoomsLayout, roomsCleanedLayout, roomsNotCleanedLayout);
+
+        // Update the statistics dynamically
         updateRoomStats();
+
+        // Task History Section
+        H3 historyTitle = new H3("Latest Task Changes");
+        historyTitle.getStyle().set("margin-top", "20px").set("margin-bottom", "10px");
+
+        // Create a container to display the history
+        VerticalLayout taskHistoryLayout = new VerticalLayout();
+        taskHistoryLayout.getStyle().set("background-color", "#f9f9f9")
+                .set("border", "1px solid #e0e0e0")
+                .set("padding", "10px")
+                .set("border-radius", "5px");
+
+        // Populate the task history dynamically
+        updateTaskHistory(taskHistoryLayout);
+
+        // Add the task history section to the homepage layout
+        homepageLayout.add(historyTitle, taskHistoryLayout);
 
         return homepageLayout;
     }
+
 
     private HorizontalLayout createStatRow(String label, Span value) {
         // Text for the stat
@@ -304,6 +326,19 @@ public class manager_gui extends VerticalLayout {
         return notCleanedRooms; // Return the filtered list
     }
 
+    private void updateTaskHistory(VerticalLayout taskHistoryLayout) {
+        taskHistoryLayout.removeAll(); // Clear existing history
+
+        // Fetch the latest task history
+        LinkedList<String> history = manager_functions.getTaskHistory();
+
+        // Add each task change to the layout
+        for (String taskChange : history) {
+            Span historyEntry = new Span(taskChange);
+            historyEntry.getStyle().set("font-size", "14px").set("color", "#333");
+            taskHistoryLayout.add(historyEntry);
+        }
+    }
 
 
 }

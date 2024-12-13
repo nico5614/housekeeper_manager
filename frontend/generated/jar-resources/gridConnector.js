@@ -842,13 +842,19 @@ import { isFocusable } from '@vaadin/grid/src/vaadin-grid-active-item-mixin.js';
 
         grid.$connector.removeFromQueue = tryCatchWrapper(function (item) {
           let itemId = grid.getItemId(item);
-          // The treePageCallbacks for the itemId are about to be discarded ->
-          // Resolve the callbacks with an empty array to not leave grid in loading state
-          Object.values(treePageCallbacks[itemId] || {}).forEach((callback) => callback([]));
-          
           delete treePageCallbacks[itemId];
-          ensureSubCacheQueue = ensureSubCacheQueue.filter((item) => item.itemkey !== itemId);
-          parentRequestQueue = parentRequestQueue.filter((item) => item.parentKey !== itemId);
+          grid.$connector.removeFromArray(ensureSubCacheQueue, (item) => item.itemkey === itemId);
+          grid.$connector.removeFromArray(parentRequestQueue, (item) => item.parentKey === itemId);
+        });
+
+        grid.$connector.removeFromArray = tryCatchWrapper(function (array, removeTest) {
+          if (array.length) {
+            for (let index = array.length - 1; index--; ) {
+              if (removeTest(array[index])) {
+                array.splice(index, 1);
+              }
+            }
+          }
         });
 
         grid.$connector.confirmParent = tryCatchWrapper(function (id, parentKey, levelSize) {
@@ -952,18 +958,6 @@ import { isFocusable } from '@vaadin/grid/src/vaadin-grid-active-item-mixin.js';
               delete rootPageCallbacks[page];
               callback([]);
             }
-          }
-
-          if (Object.keys(rootPageCallbacks).length) {
-            // There are still unresolved callbacks waiting for data to the root level,
-            // which means that the range grid requested items for was only partially filled.
-            //
-            // This can happen for example if you preload some items without knowing exactly
-            // how many items the grid web component is going to request.
-            //
-            // Clear the last requested range for the root level to unblock
-            // any possible data requests for the same range in fetchPage.
-            delete lastRequestedRanges[root];
           }
 
           // Let server know we're done
